@@ -44,6 +44,7 @@ const CATALOG_ITEMS = [
 const modalElement = document.querySelector('#detalheModal');
 const modalTitle = modalElement.querySelector('.modal-title');
 const modalBody = modalElement.querySelector('.modal-body');
+const modalAction = modalElement.querySelector('.btn-success');
 
 modalElement.addEventListener('show.bs.modal', function (event) {
     const button = event.relatedTarget;
@@ -60,5 +61,42 @@ modalElement.addEventListener('show.bs.modal', function (event) {
         <hr>
         <p>${item.detalhes}</p>
         `;
+
+        //adiciona campos especificos por categoria
+        if (item.categoria === 'Livros') {
+            detailsHTML += `<p><strong>Autor:</strong> ${item.autor}</p>`;
+            detailsHTML += `<p><strong>Lançamento:</strong> ${item.lancamento}</p>`;
+            detailsHTML += `<p class="text-info"><strong>Estoque Disponivel:</strong> ${item.estoque} unidades</p>`;
+        } else if (item.categoria === 'Artesanato') {
+            detailsHTML += `<p><strong>Material:</strong> ${item.material}</p>`;
+            detailsHTML += `<p><strong>Dimensoes/comprimento:</strong> ${item.dimensoes || item.comprimento}</p>`;
+            detailsHTML += `<p class="text-info"><strong>Peças Exclusivas em Estoque:</strong> ${item.estoque}</p>`;
+        }
+        modalBody.innerHTML = detailsHTML;
+
+        //ao clicar no botão "adicionar ao carrinho"
+        modalAction.onclick = () => {
+            console.log(`ação: item '${item.titulo}'  (ID: ${item.id}) adiciona ao carrinho.`);
+            const bsModal = bootstrap.Modal.getInstance(modalElement);
+            if(bsModal) bsModal.hide();
+        };
+    }
+});
+
+//2.ouvinte para a funcionalidade de busca (simples)
+const searchInput = document.getElementById('search-input');
+const searchButton = document.getElementById('search-button');
+const items = document.querySelectorAll('.item-catalogo');
+
+function executarPesquisa(event) {
+
+}
+
+searchButton.addEventListener('click', executarPesquisa);
+searchInput.addEventListener('keyup',(event) => {
+    if (event.key === 'Enter') {
+        executaePesquisa(event);
+    } else if (searchInput.ariaValueMax.trim() === "") {
+        executarPesquisa(event);
     }
 });
